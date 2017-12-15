@@ -1,0 +1,40 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+Vagrant.configure("2") do |config|
+  # Vagrant Box used
+  config.vm.box = "ubuntu/trusty64"
+
+  # Create a forwarded port mapping which allows access to a specific port
+  # within the machine from a port on the host machine and only allow access
+  # via 127.0.0.1 to disable public access
+  config.vm.network "forwarded_port", guest: 9443, host: 9443, host_ip: "127.0.0.1", auto_correct: true
+
+  # Share folder containing the JDK and the product pack
+  config.vm.synced_folder "./files", "/home/vagrant"
+
+  config.vm.provider "virtualbox" do |v|
+    v.memory = 2500
+  end
+
+  # Enable provisioning with a shell script.
+  config.vm.provision "shell", inline: <<-SHELL
+    apt-get update
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends --no-install-suggests curl iproute2 telnet unzip
+    rm -rf /var/lib/apt/lists/*
+    cd /home/vagrant
+    if test ! -d java; then mkdir java; fi
+    if test -d java; then
+      tar -xf jdk-8u*-linux-x64.tar.gz -C /home/vagrant/java --strip-components=1
+      export JAVA_HOME=/home/vagrant/java/
+
+      if test -d java; then
+        if test ! -d wso2is-5.3.0; then unzip wso2is-5.3.0.zip; fi
+
+        if test -d wso2is-5.3.0; then
+          chown -R vagrant:vagrant wso2is-5.3.0
+          ./wso2is-5.3.0/bin/wso2server.sh
+        fi
+      fi
+    fi
+  SHELL
+end
