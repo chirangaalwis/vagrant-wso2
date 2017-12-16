@@ -1,6 +1,6 @@
 # Vagrant for WSO2 Identity Server 5.3.0
 
-This section defines the step-by-step instructions to perform a VM based deployment of
+This section defines the step-by-step instructions to perform a virtual machine (VM) based deployment of
 WSO2 Identity Server, using Vagrant and Oracle VM VirtualBox.
 
 Prior to the following steps, ensure that both [Vagrant](https://www.vagrantup.com/docs/installation/)
@@ -26,3 +26,8 @@ in order to obtain latest bug fixes and updates for the product.
 ##### 3. Execute the Vagrant file
 - Move to `VAGRANT_HOME`
 - Run the `vagrant up` command to execute the `Vagrantfile`
+
+##### 4. Accessing the management console
+- To access the management console, use the static private network IP of the VM (by default, this has been set to
+`192.168.0.3` in the `Vagrantfile`) and port 9443.
+      + `https:<STATIC_PRIVATE_IP>:9443/carbon`
