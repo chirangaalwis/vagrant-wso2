@@ -21,9 +21,9 @@ Vagrant.configure("2") do |config|
 
   # Enable provisioning with a shell script.
   config.vm.provision "shell", inline: <<-SHELL
-    # apt-get update
-    # DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends --no-install-suggests curl iproute2 telnet unzip
-    # rm -rf /var/lib/apt/lists/*
+    apt-get update
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends --no-install-suggests curl iproute2 telnet unzip
+    rm -rf /var/lib/apt/lists/*
     cd /home/vagrant
     if test ! -d java; then mkdir java; fi
     if test -d java; then
