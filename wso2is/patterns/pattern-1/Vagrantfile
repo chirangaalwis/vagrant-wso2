@@ -1,25 +1,5 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
-# Vagrant.configure("2") do |config|
-#   # Vagrant Box used
-#   config.vm.box = "ubuntu/xenial"
-#
-#   config.vm.define "db" do |db|
-#     db.vm.provision "shell", path: "mysql/db_provision.sh"
-#     db.vm.network "private_network", ip: "192.168.0.3"
-#   end
-#
-#   config.vm.define "identity-server-1" do |is1|
-#     is1.vm.provision "shell", path: "identity-server/is_provision.sh"
-#     is1.vm.network "private_network", ip: "192.168.0.4"
-#   end
-#
-#   config.vm.define "identity-server-2" do |is2|
-#     is2.vm.provision "shell", path: "identity-server/is_provision.sh"
-#     is2.vm.network "private_network", ip: "192.168.0.5"
-#   end
-#
-# end
 
 require 'yaml'
 require 'fileutils'

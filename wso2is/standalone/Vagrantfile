@@ -2,42 +2,49 @@
 # vi: set ft=ruby :
 Vagrant.configure("2") do |config|
   # Vagrant Box used
-  config.vm.box = "ubuntu/trusty64"
+  config.vm.box = "ubuntu/xenial64"
 
   # Using 'forwarded_port's
-  # config.vm.network "forwarded_port", guest: 9443, host: 9443, host_ip: "127.0.0.1", auto_correct: true
-  # config.vm.network "forwarded_port", guest: 9763, host: 9763, host_ip: "127.0.0.1", auto_correct: true
-
-  # Using a private network
-  config.vm.network "private_network", ip: "192.168.0.3"
-
-  # Share folder containing the JDK and the product pack
-  config.vm.synced_folder "./files", "/home/vagrant"
+  config.vm.network "forwarded_port", guest: 9443, host: 9443, host_ip: "127.0.0.1", auto_correct: true
+  config.vm.network "forwarded_port", guest: 9763, host: 9763, host_ip: "127.0.0.1", auto_correct: true
 
   config.vm.provider "virtualbox" do |v|
-    v.memory = 2500
-    # v.cpus = 2
+    v.memory = 2048
   end
 
   # Enable provisioning with a shell script.
   config.vm.provision "shell", inline: <<-SHELL
+    WSO2_SERVER=wso2is
+    WSO2_SERVER_VERSION=5.4.0
+    WSO2_SERVER_PACK=${WSO2_SERVER}-${WSO2_SERVER_VERSION}.zip
+    JDK_ARCHIVE=jdk-8u*-linux-x64.tar.gz
+    WORKING_DIRECTORY=/home/ubuntu
+    JAVA_HOME=$WORKING_DIRECTORY/java/
+
     apt-get update
-    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends --no-install-suggests curl iproute2 telnet unzip
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends --no-install-suggests \
+    curl \
+    iproute2 \
+    telnet \
+    unzip
     rm -rf /var/lib/apt/lists/*
-    cd /home/vagrant
-    if test ! -d java; then mkdir java; fi
-    if test -d java; then
-      tar -xf jdk-8u*-linux-x64.tar.gz -C /home/vagrant/java --strip-components=1
-      export JAVA_HOME=/home/vagrant/java/
 
-      if test -d java; then
-        if test ! -d wso2is-5.4.0; then unzip wso2is-5.4.0.zip; fi
-
-        if test -d wso2is-5.4.0; then
-          chown -R vagrant:vagrant wso2is-5.4.0
-          ./wso2is-5.4.0/bin/wso2server.sh
-        fi
-      fi
+    # set up Java
+    if test ! -d $JAVA_HOME; then
+      mkdir $JAVA_HOME;
+      tar -xf /vagrant/files/$JDK_ARCHIVE -C $JAVA_HOME --strip-components=1
     fi
+    export JAVA_HOME=$JAVA_HOME
+
+    # copy product pack
+    if test ! -d $WORKING_DIRECTORY/${WSO2_SERVER}-${WSO2_SERVER_VERSION}; then
+      cp /vagrant/files/$WSO2_SERVER_PACK $WORKING_DIRECTORY
+      unzip -q /vagrant/files/$WSO2_SERVER_PACK -d $WORKING_DIRECTORY
+      rm $WORKING_DIRECTORY/$WSO2_SERVER_PACK
+    fi
+
+    chown -R ubuntu:ubuntu $WORKING_DIRECTORY
+
+    sh $WORKING_DIRECTORY/${WSO2_SERVER}-${WSO2_SERVER_VERSION}/bin/wso2server.sh start
   SHELL
 end

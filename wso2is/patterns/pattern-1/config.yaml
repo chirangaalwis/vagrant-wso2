@@ -38,27 +38,3 @@ servers:
     ram: 2048
     cpu: 1
     provisioner_script: identity-server/is_provision_2.sh
-  # -
-  #   enabled: true
-  #   hostname: identity-server-analytics
-  #   box: ubuntu/xenial64
-  #   ip: 192.168.100.5
-  #   ram: 2048
-  #   cpu: 1
-  #   provisioner_script: identity-server/is_analytics_provision.sh
-
-# -
-#   enabled: false
-#   hostname: product.dev.wso2.org
-#   facters:
-#     product_name: wso2product
-#     product_version: version
-#     product_profile: profile
-#     environment: dev
-#     platform: default
-#     use_hieradata: true
-#     pattern: pattern-1
-#   box: ubuntu/trusty64
-#   ip: 192.168.100.3
-#   ram: 2048
-#   cpu: 1
