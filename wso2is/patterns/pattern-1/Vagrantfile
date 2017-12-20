@@ -1,0 +1,54 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+# Vagrant.configure("2") do |config|
+#   # Vagrant Box used
+#   config.vm.box = "ubuntu/xenial"
+#
+#   config.vm.define "db" do |db|
+#     db.vm.provision "shell", path: "mysql/db_provision.sh"
+#     db.vm.network "private_network", ip: "192.168.0.3"
+#   end
+#
+#   config.vm.define "identity-server-1" do |is1|
+#     is1.vm.provision "shell", path: "identity-server/is_provision.sh"
+#     is1.vm.network "private_network", ip: "192.168.0.4"
+#   end
+#
+#   config.vm.define "identity-server-2" do |is2|
+#     is2.vm.provision "shell", path: "identity-server/is_provision.sh"
+#     is2.vm.network "private_network", ip: "192.168.0.5"
+#   end
+#
+# end
+
+require 'yaml'
+require 'fileutils'
+
+# load server config from YAML file
+CONFIGURATION_YAML = YAML.load_file('config.yaml')
+
+Vagrant.configure(2) do |config|
+  CONFIGURATION_YAML['servers'].each do |server|
+    if defined?(server['enabled']) && server['enabled'] != false
+      puts 'Provisioning VirtualBox with hostname: ', server['hostname']
+      config.vm.define server['hostname'] do |server_config|
+        server_config.vm.box = server['box']
+        server_config.vm.host_name = server['hostname']
+        server_config.vm.network :private_network, ip: server['ip']
+        memory = server['ram'] ? server['ram'] : 256
+        cpu = server['cpu'] ? server['cpu'] : 1
+
+        server_config.vm.provider :virtualbox do |vb|
+          vb.name = server['hostname']
+          vb.check_guest_additions = false
+          vb.functional_vboxsf = false
+          vb.gui = false
+          vb.customize ['modifyvm', :id, '--memory', memory]
+          vb.customize ['modifyvm', :id, '--cpus', cpu]
+        end
+
+        server_config.vm.provision "shell", path: server["provisioner_script"]
+      end
+    end
+  end
+end
