@@ -23,3 +23,7 @@ hs_err_pid*
 rat.txt
 target/
 wso2*/scripts
+
+wso2is/patterns/pattern-*/.vagrant/
+wso2is/standalone/.vagrant/
+*.log

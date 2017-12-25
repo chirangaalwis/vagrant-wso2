@@ -16,7 +16,7 @@ Vagrant.configure("2") do |config|
   config.vm.provision "shell", inline: <<-SHELL
     WSO2_SERVER=wso2is
     WSO2_SERVER_VERSION=5.4.0
-    WSO2_SERVER_PACK=${WSO2_SERVER}-${WSO2_SERVER_VERSION}.zip
+    WSO2_SERVER_PACK=$WSO2_SERVER-$WSO2_SERVER_VERSION.zip
     JDK_ARCHIVE=jdk-8u*-linux-x64.tar.gz
     WORKING_DIRECTORY=/home/ubuntu
     JAVA_HOME=$WORKING_DIRECTORY/java/
@@ -45,6 +45,6 @@ Vagrant.configure("2") do |config|
 
     chown -R ubuntu:ubuntu $WORKING_DIRECTORY
 
-    sh $WORKING_DIRECTORY/${WSO2_SERVER}-${WSO2_SERVER_VERSION}/bin/wso2server.sh start
+    sh $WORKING_DIRECTORY/$WSO2_SERVER-$WSO2_SERVER_VERSION/bin/wso2server.sh start
   SHELL
 end
