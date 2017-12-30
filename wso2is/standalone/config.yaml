@@ -13,31 +13,35 @@
 # limitations under the License.
 
 ---
-mode: 'cluster'
+mode: 'standalone'
 servers:
   -
-    enabled: false
-    hostname: db
+    enabled: true
+    hostname: identity-server
     box: ubuntu/xenial64
-    ip: 192.168.100.2
     ram: 2048
     cpu: 1
-    provisioner_script: mysql/db_provisioner.sh
+    port_mappings:
+#      -
+#        guest_port: 9763
+#        host_port: 9763
+      -
+        guest_port: 9443
+        host_port: 9443
+    provisioner_script: scripts/product_provisioner.sh
+    provisioner_script_args: 'wso2is 5.4.0'
   -
     enabled: true
-    hostname: identity-server-1
+    hostname: identity-server-analytics
     box: ubuntu/xenial64
-    ip: 192.168.100.3
     ram: 2048
     cpu: 1
-    provisioner_script: identity-server/scripts/product_provisioner.sh
-    provisioner_script_args: 'wso2is 5.4.0 1'
-  -
-    enabled: true
-    hostname: identity-server-2
-    box: ubuntu/xenial64
-    ip: 192.168.100.4
-    ram: 2048
-    cpu: 1
-    provisioner_script: identity-server/scripts/product_provisioner.sh
-    provisioner_script_args: 'wso2is 5.4.0 2'
+    port_mappings:
+#      -
+#        guest_port: 9764
+#        host_port: 9764
+      -
+        guest_port: 9444
+        host_port: 9444
+    provisioner_script: scripts/product_provisioner.sh
+    provisioner_script_args: 'wso2is-analytics 5.4.0'

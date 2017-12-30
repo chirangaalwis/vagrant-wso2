@@ -39,8 +39,6 @@ mysql -uroot -pwso2carbon -e "create user 'root'@'192.168.100.3' identified by '
 mysql -uroot -pwso2carbon -e "grant all privileges on *.* to 'root'@'192.168.100.3' with grant option;"
 mysql -uroot -pwso2carbon -e "create user 'root'@'192.168.100.4' identified by 'wso2carbon';"
 mysql -uroot -pwso2carbon -e "grant all privileges on *.* to 'root'@'192.168.100.4' with grant option;"
-mysql -uroot -pwso2carbon -e "create user 'root'@'192.168.100.5' identified by 'wso2carbon';"
-mysql -uroot -pwso2carbon -e "grant all privileges on *.* to 'root'@'192.168.100.5' with grant option;"
 mysql -uroot -pwso2carbon -e "flush privileges;"
 
 sed -i -e 's/127.0.0.1/0.0.0.0/' /etc/mysql/mysql.conf.d/mysqld.cnf

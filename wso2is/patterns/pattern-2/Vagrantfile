@@ -18,17 +18,36 @@
 require 'yaml'
 require 'fileutils'
 
-# load server config from YAML file
-CONFIGURATION_YAML = YAML.load_file('config.yaml')
+# load server configurations from YAML file
+CONFIGURATIONS = YAML.load_file('config.yaml')
 
 Vagrant.configure(2) do |config|
-  CONFIGURATION_YAML['servers'].each do |server|
+  CONFIGURATIONS['servers'].each do |server|
     if defined?(server['enabled']) && server['enabled'] != false
-      puts 'Provisioning VirtualBox with hostname: ', server['hostname']
+
+      if !defined?(server['enabled'])
+        puts "No deployment mode defined [The server deployment mode can only be either standalone or clustered]"
+        break
+      end
+
+      if CONFIGURATIONS['mode'] == 'standalone'
+        server['ports'].each do |port|
+          config.vm.network "forwarded_port", guest: port, host: port, host_ip: "127.0.0.1"
+        end
+      elsif CONFIGURATIONS['mode'] == 'clustered'
+        config.vm.define server['hostname'] do |server_config|
+          server_config.vm.network :private_network, ip: server['ip']
+        end
+      else
+        puts "Incorrect deployment mode ''" + CONFIGURATIONS['mode'] + "' [The server deployment mode can only be either standalone or clustered]"
+        break
+      end
+
+
       config.vm.define server['hostname'] do |server_config|
         server_config.vm.box = server['box']
         server_config.vm.host_name = server['hostname']
-        server_config.vm.network :private_network, ip: server['ip']
+        # server_config.vm.network :private_network, ip: server['ip']
         memory = server['ram'] ? server['ram'] : 2048
         cpu = server['cpu'] ? server['cpu'] : 1
 
