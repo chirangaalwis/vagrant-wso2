@@ -13,25 +13,25 @@
 # limitations under the License.
 
 ---
-mode: 'clustered'
+mode: 'cluster'
 servers:
   -
-    enabled: true
+    enabled: false
     hostname: db
     box: ubuntu/xenial64
     ip: 192.168.100.2
     ram: 2048
     cpu: 1
-    provisioner_script: mysql/db_provision.sh
+    provisioner_script: mysql/db_provisioner.sh
   -
-    enabled: true
+    enabled: false
     hostname: identity-server-analytics-1
     box: ubuntu/xenial64
     ip: 192.168.100.5
     ram: 2048
     cpu: 1
-    provisioner_script: identity-server-analytics/scripts/is_analytics_provision.sh
-    provisioner_script_args: '1'
+    provisioner_script: identity-server-analytics/scripts/product_provisioner.sh
+    provisioner_script_args: 'wso2is-analytics 5.4.0'
   -
     enabled: true
     hostname: identity-server-1
@@ -39,8 +39,13 @@ servers:
     ip: 192.168.100.3
     ram: 2048
     cpu: 1
-    provisioner_script: identity-server/scripts/is_provision.sh
-    provisioner_script_args: '1'
+    provisioner_script: identity-server/scripts/product_provisioner.sh
+    provisioner_script_args: 'wso2is 5.4.0 1'
+    volumes:
+      - host: "sync/repository/deployment/server/eventpublishers"
+        guest: "/home/ubuntu/wso2is-5.4.0/repository/deployment/server/eventpublishers"
+      - host: "sync/repository/deployment/server/eventstreams"
+        guest: "/home/ubuntu/wso2is-5.4.0/repository/deployment/server/eventstreams"
   -
     enabled: true
     hostname: identity-server-2
@@ -48,14 +53,10 @@ servers:
     ip: 192.168.100.4
     ram: 2048
     cpu: 1
-    provisioner_script: identity-server/scripts/is_provision.sh
-    provisioner_script_args: '2'
-#  -
-#    enabled: false
-#    hostname: identity-server-analytics-2
-#    box: ubuntu/xenial64
-#    ip: 192.168.100.6
-#    ram: 2048
-#    cpu: 1
-#    provisioner_script: identity-server-analytics/scripts/is_analytics_provision.sh
-#    provisioner_script_args: '2'
+    provisioner_script: identity-server/scripts/product_provisioner.sh
+    provisioner_script_args: 'wso2is 5.4.0 2'
+    volumes:
+      - host: "sync/repository/deployment/server/eventpublishers"
+        guest: "/home/ubuntu/wso2is-5.4.0/repository/deployment/server/eventpublishers"
+      - host: "sync/repository/deployment/server/eventstreams"
+        guest: "/home/ubuntu/wso2is-5.4.0/repository/deployment/server/eventstreams"

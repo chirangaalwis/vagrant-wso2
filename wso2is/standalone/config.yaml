@@ -22,9 +22,6 @@ servers:
     ram: 2048
     cpu: 1
     port_mappings:
-#      -
-#        guest_port: 9763
-#        host_port: 9763
       -
         guest_port: 9443
         host_port: 9443
@@ -37,9 +34,6 @@ servers:
     ram: 2048
     cpu: 1
     port_mappings:
-#      -
-#        guest_port: 9764
-#        host_port: 9764
       -
         guest_port: 9444
         host_port: 9444

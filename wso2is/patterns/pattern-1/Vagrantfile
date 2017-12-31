@@ -40,6 +40,28 @@ Vagrant.configure(2) do |config|
         # define the virtual machine host name
         server_config.vm.host_name = server['hostname']
 
+
+        memory = server['ram'] ? server['ram'] : 2048
+        cpu = server['cpu'] ? server['cpu'] : 1
+        # setup VirtualBox specific provider configurations
+        server_config.vm.provider :virtualbox do |vb|
+          vb.name = server['hostname']
+          vb.check_guest_additions = true
+          vb.functional_vboxsf = true
+          vb.gui = false
+          vb.customize ['modifyvm', :id, '--memory', memory]
+          vb.customize ['modifyvm', :id, '--cpus', cpu]
+        end
+
+        # configure shell provisioner
+        if server['provisioner_script_args']
+          # if argument(s) have been defined to be passed to the shell script
+          server_config.vm.provision "shell", path: server["provisioner_script"], args: server["provisioner_script_args"]
+        else
+          # if no argument(s) have been defined to be passed to the shell script
+          server_config.vm.provision "shell", path: server["provisioner_script"]
+        end
+
         # setup network configurations for the virtual machine
         if CONFIGURATIONS['mode'] == 'standalone'
           # if the virtual machine is expected to run in standalone mode (not part of a cluster)
@@ -53,31 +75,19 @@ Vagrant.configure(2) do |config|
           # if the virtual machine is expected to part of a product cluster
           # use private networking (recommended for multi-machine scenarios)
           server_config.vm.network :private_network, ip: server['ip']
+
+          # define synced folders for artifact synchronization
+          if server['volumes']
+            server['volumes'].each do |volume|
+              if volume['host'] && volume['guest']
+                server_config.vm.synced_folder "#{volume['host']}","#{volume['guest']}"
+              end
+            end
+          end
         else
           # if the defined deployment mode is invalid
           puts "Incorrect deployment mode ''" + CONFIGURATIONS['mode'] + "' [The server deployment mode can only be either 'standalone' or 'cluster']"
           break
-        end
-
-        memory = server['ram'] ? server['ram'] : 2048
-        cpu = server['cpu'] ? server['cpu'] : 1
-        # setup VirtualBox specific provider configurations
-        server_config.vm.provider :virtualbox do |vb|
-          vb.name = server['hostname']
-          vb.check_guest_additions = false
-          vb.functional_vboxsf = false
-          vb.gui = false
-          vb.customize ['modifyvm', :id, '--memory', memory]
-          vb.customize ['modifyvm', :id, '--cpus', cpu]
-        end
-
-        # configure shell provisioner
-        if server['provisioner_script_args']
-          # if argument(s) have been defined to be passed to the shell script
-          server_config.vm.provision "shell", path: server["provisioner_script"], args: server["provisioner_script_args"]
-        else
-          # if no argument(s) have been defined to be passed to the shell script
-          server_config.vm.provision "shell", path: server["provisioner_script"]
         end
       end
 

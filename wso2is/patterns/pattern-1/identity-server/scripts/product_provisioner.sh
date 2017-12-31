@@ -39,9 +39,12 @@ if test -d $JAVA_HOME; then
 fi
 
 # copy the WSO2 product pack
-if test ! -d ${WSO2_SERVER}-${WSO2_SERVER_VERSION}; then
+
+# note: <product-pack>/bin folder is specifically checked here, since by the time this check is executed,
+# the <product-pack> folder is created due to artifact syncing
+if test ! -d ${WSO2_SERVER}-${WSO2_SERVER_VERSION}/bin; then
   cp /vagrant/files/$WSO2_SERVER_PACK $WORKING_DIRECTORY
-  unzip -q /vagrant/files/$WSO2_SERVER_PACK -d $WORKING_DIRECTORY
+  unzip -q -n /vagrant/files/$WSO2_SERVER_PACK -d $WORKING_DIRECTORY
   rm $WORKING_DIRECTORY/$WSO2_SERVER_PACK
 fi
 
@@ -54,6 +57,7 @@ cp /vagrant/identity-server/node-$3/repository/conf/axis2/axis2.xml $WORKING_DIR
 cp /vagrant/identity-server/common/repository/conf/datasources/master-datasources.xml $WORKING_DIRECTORY/${WSO2_SERVER}-${WSO2_SERVER_VERSION}/repository/conf/datasources/master-datasources.xml
 cp /vagrant/identity-server/common/repository/conf/carbon.xml $WORKING_DIRECTORY/${WSO2_SERVER}-${WSO2_SERVER_VERSION}/repository/conf/carbon.xml
 cp /vagrant/identity-server/common/repository/conf/user-mgt.xml $WORKING_DIRECTORY/${WSO2_SERVER}-${WSO2_SERVER_VERSION}/repository/conf/user-mgt.xml
+cp /vagrant/identity-server/common/repository/conf/identity/embedded-ldap.xml $WORKING_DIRECTORY/${WSO2_SERVER}-${WSO2_SERVER_VERSION}/repository/conf/identity/embedded-ldap.xml
 cp /vagrant/identity-server/common/repository/conf/identity/identity.xml $WORKING_DIRECTORY/${WSO2_SERVER}-${WSO2_SERVER_VERSION}/repository/conf/identity/identity.xml
 
 # start the WSO2 product pack as a background service

@@ -38,7 +38,7 @@
                 <configuration>
                     <url>jdbc:mysql://192.168.100.2:3306/wso2isanalytics?autoReconnect=true</url>
                     <username>root</username>
-                    <password>Carbon@wso2</password>
+                    <password>wso2carbon</password>
                     <driverClassName>com.mysql.jdbc.Driver</driverClassName>
                     <maxActive>50</maxActive>
                     <maxWait>60000</maxWait>
@@ -59,7 +59,7 @@
                 <configuration>
                     <url>jdbc:mysql://192.168.100.2:3306/wso2isanalytics?autoReconnect=true</url>
                     <username>root</username>
-                    <password>Carbon@wso2</password>
+                    <password>wso2carbon</password>
                     <driverClassName>com.mysql.jdbc.Driver</driverClassName>
                     <maxActive>50</maxActive>
                     <maxWait>60000</maxWait>

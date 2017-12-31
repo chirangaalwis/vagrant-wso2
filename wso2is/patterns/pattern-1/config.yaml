@@ -16,7 +16,7 @@
 mode: 'cluster'
 servers:
   -
-    enabled: false
+    enabled: true
     hostname: db
     box: ubuntu/xenial64
     ip: 192.168.100.2
@@ -32,6 +32,11 @@ servers:
     cpu: 1
     provisioner_script: identity-server/scripts/product_provisioner.sh
     provisioner_script_args: 'wso2is 5.4.0 1'
+    volumes:
+      - host: "sync/repository/deployment/server/eventpublishers"
+        guest: "/home/ubuntu/wso2is-5.4.0/repository/deployment/server/eventpublishers"
+      - host: "sync/repository/deployment/server/eventstreams"
+        guest: "/home/ubuntu/wso2is-5.4.0/repository/deployment/server/eventstreams"
   -
     enabled: true
     hostname: identity-server-2
@@ -41,3 +46,8 @@ servers:
     cpu: 1
     provisioner_script: identity-server/scripts/product_provisioner.sh
     provisioner_script_args: 'wso2is 5.4.0 2'
+    volumes:
+      - host: "sync/repository/deployment/server/eventpublishers"
+        guest: "/home/ubuntu/wso2is-5.4.0/repository/deployment/server/eventpublishers"
+      - host: "sync/repository/deployment/server/eventstreams"
+        guest: "/home/ubuntu/wso2is-5.4.0/repository/deployment/server/eventstreams"
